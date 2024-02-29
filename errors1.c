@@ -1,39 +1,39 @@
 #include "shell.h"
 
 /**
- * _erratoi - converts a string to int
- * @s: the string
- * Return: 0
+ * _erratoi - converts a string to an integer
+ * @s: the string to be converted
+ * Return: 0 if no numbers in string, converted number otherwise
+ *       -1 on error
  */
 int _erratoi(char *s)
 {
-	long int x = 0;
+	int i = 0;
 	unsigned long int result = 0;
 
 	if (*s == '+')
 		s++;  /* TODO: why does this make main return 255? */
-	for (x = 0;  s[x] != '\0'; x++)
+	for (i = 0;  s[i] != '\0'; i++)
 	{
-		if (s[x] >= '0' && s[x] <= '9')
+		if (s[i] >= '0' && s[i] <= '9')
 		{
 			result *= 10;
-			result += (s[x] - '0');
-			if (result > INT_MAX){
+			result += (s[i] - '0');
+			if (result > INT_MAX)
 				return (-1);
-			}
 		}
-		else{
+		else
 			return (-1);
-		}
 	}
 	return (result);
 }
 
 /**
- * print_error - prints error message
- * @info: the parameter
- * @estr: string
- * Return: 0
+ * print_error - prints an error message
+ * @info: the parameter & return info struct
+ * @estr: string containing specified error type
+ * Return: 0 if no numbers in string, converted number otherwise
+ *        -1 on error
  */
 void print_error(info_t *info, char *estr)
 {
@@ -47,97 +47,94 @@ void print_error(info_t *info, char *estr)
 }
 
 /**
- * print_d - function
+ * print_d - function prints a decimal (integer) number (base 10)
  * @input: the input
- * @fd: the filed
- * Return: number of characters
+ * @fd: the filedescriptor to write to
+ *
+ * Return: number of characters printed
  */
 int print_d(int input, int fd)
 {
 	int (*__putchar)(char) = _putchar;
-	int e, c = 0;
-	unsigned int _aboss_, current;
+	int i, count = 0;
+	unsigned int _abs_, current;
 
 	if (fd == STDERR_FILENO)
 		__putchar = _eputchar;
 	if (input < 0)
 	{
-		_aboss_ = -input;
+		_abs_ = -input;
 		__putchar('-');
-		c++;
+		count++;
 	}
-	else {
-		_aboss_ = input;
-	}
-	current = _aboss_;
-	for (e = 1000000000; e > 1; e /= 10)
+	else
+		_abs_ = input;
+	current = _abs_;
+	for (i = 1000000000; i > 1; i /= 10)
 	{
-		if (_aboss_ / e)
+		if (_abs_ / i)
 		{
-			__putchar('0' + current / e);
-			c++;
+			__putchar('0' + current / i);
+			count++;
 		}
-		current %= e;
+		current %= i;
 	}
 	__putchar('0' + current);
-	c++;
+	count++;
 
-	return (c);
+	return (count);
 }
 
 /**
- * convert_number - converter F
- * @num: num
- * @base: B
- * @flags: arg f
+ * convert_number - converter function, a clone of itoa
+ * @num: number
+ * @base: base
+ * @flags: argument flags
+ *
  * Return: string
  */
 char *convert_number(long int num, int base, int flags)
 {
-	static char *arr;
-	static char buff[50];
-	char s = 0;
+	static char *array;
+	static char buffer[50];
+	char sign = 0;
 	char *ptr;
 	unsigned long n = num;
 
 	if (!(flags & CONVERT_UNSIGNED) && num < 0)
 	{
 		n = -num;
-		s = '-';
+		sign = '-';
 
 	}
 	array = flags & CONVERT_LOWERCASE ? "0123456789abcdef" : "0123456789ABCDEF";
-	ptr = &buff[49];
-
-
+	ptr = &buffer[49];
 	*ptr = '\0';
 
-
 	do	{
-		*--ptr = arr[n % base];
+		*--ptr = array[n % base];
 		n /= base;
 	} while (n != 0);
 
-	if (sign) {
-		*--ptr = s;
-	}
+	if (sign)
+		*--ptr = sign;
 	return (ptr);
 }
 
 /**
- * remove_comments - function replacor
- * @buf: address of sss
+ * remove_comments - function replaces first instance of '#' with '\0'
+ * @buf: address of the string to modify
+ *
  * Return: Always 0;
  */
 void remove_comments(char *buf)
 {
-	int x;
+	int i;
 
-	for (x = 0; buf[x] != '\0'; x++)
-		if (buf[x] == '#' && (!i || buf[x - 1] == ' '))
+	for (i = 0; buf[i] != '\0'; i++)
+		if (buf[i] == '#' && (!i || buf[i - 1] == ' '))
 		{
-			buf[x] = '\0';
+			buf[i] = '\0';
 			break;
-
 		}
 }
